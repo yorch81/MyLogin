@@ -30,14 +30,6 @@ require_once('MySocial.class.php');
 class MyLogin
 {
 	/**
-     * Instance Handler to Singleton Pattern
-     *
-     * @var object $_instance Instance Handler
-     * @access private
-     */
-	private static $_instance;
-
-	/**
      * MySocial Instance
      *
      * @var object $_social MySocial Instance
@@ -70,7 +62,7 @@ class MyLogin
 	}
 
 	/**
-	 * Singleton Implementation
+	 * Abstract Factory Implementation
 	 *
 	 * @param string $type      Social Type
 	 * @param string $appKey    Facebook Application Id or Twitter Consumer Key 
@@ -80,15 +72,8 @@ class MyLogin
 	 */
 	public static function getInstance($type = self::FACEBOOK, $appKey = '', $appSecret = '', $cbUrl = '')
 	{
-		if(self::$_instance){
-			return self::$_instance;
-		}
-		else{
-			$class = __CLASS__;
-			self::$_instance = new $class($type, $appKey, $appSecret, $cbUrl);
-
-			return self::$_instance;
-		}
+		$class = __CLASS__;
+		return new $class($type, $appKey, $appSecret, $cbUrl);
 	}
 
 	/**

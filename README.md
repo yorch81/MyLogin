@@ -11,7 +11,7 @@ Execute phpdoc -d MyLogin/
 
 ## Installation ##
 Create file composer.json
-
+~~~
 {
     "require": {
     	"php": ">=5.4.0",
@@ -21,25 +21,30 @@ Create file composer.json
         "ruudk/twitter-oauth" : "dev-master"
     }
 }
+~~~
 
 Execute composer.phar install
 
 ## Example ##
 ~~~
 
-$social = MyLogin::getInstance('MyFaceBook', 'APP_ID', 'APP_SECRET', 'CALLBACK_URL');
+$social = MyLogin::getInstance(MyLogin::FACEBOOK, 'APP_ID', 'APP_SECRET', 'CALLBACK_URL');
 
-$social->login();
-$social->getAuthUrl();
+if ($social->login()){
+	redirect_to(MYPAGE);
+}
+else
+	redirect_to($social->getAuthUrl());
 
 ~~~
 
 ## Notes ##
-This tool uses PHP Facebook SDk and Abraham Twitter OAuth Library.
+This tool uses PHP Sessions and Facebook SDk and Abraham Twitter OAuth Library.
 
 ## References ##
 https://developers.facebook.com/
 https://dev.twitter.com/
+https://en.wikipedia.org/wiki/OAuth
 
 P.D. Let's go play !!!
 
