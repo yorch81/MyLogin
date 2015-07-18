@@ -1,0 +1,24 @@
+{
+    "name": "yorch/mylogin",
+    "description": "Abstract Class for Login in Social Networks",
+    "keywords": ["Facebook", "Twitter", "Social Networks"],
+    "homepage": "https://github.com/yorch81/MyLogin",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Jorge Alberto Ponce Turrubiates",
+            "email": "the.yorch@gmail.com",
+            "homepage": "http://the-yorch.blogspot.mx/"
+        }
+    ],
+    "require": {
+    	"php": ">=5.4.0",
+        "monolog/monolog": "1.13.1",
+        "facebook/php-sdk-v4" : "4.0.23",
+        "ruudk/twitter-oauth" : "dev-master"
+    },
+    "autoload": {
+        "files": ["MyLogin.class.php"]
+    }
+}
