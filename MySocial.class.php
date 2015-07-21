@@ -120,15 +120,17 @@ abstract class MySocial
 	 * @param  string $id   Social Id
 	 * @param  string $name Social Name
 	 * @param  string $link Social Profile Link
-	 * @param  string $profileImg Profile Image URL
+	 * @param  string $profileImg  Profile Image URL
+	 * @param  object $session     Social Session
 	 */
-	public function createSession($type, $id, $name, $link, $profileImg)
+	public function createSession($type, $id, $name, $link, $profileImg, $session)
 	{
 		$_SESSION['SOCIAL_TYPE'] = $type;
 		$_SESSION['SOCIAL_ID'] = $id;
 		$_SESSION['SOCIAL_NAME'] = $name;
 		$_SESSION['SOCIAL_LINK'] = $link;
 		$_SESSION['SOCIAL_IMG'] = $profileImg;
+		$_SESSION['SOCIAL_SESSION'] = $session;
 	}
 
 	/**
@@ -213,7 +215,7 @@ class MyFaceBook extends MySocial
 	            $fbimg = 'https://graph.facebook.com/' . $fbid . '/picture?type=large';
 
 	            // Create Session Variables
-	            $this->createSession('FB', $fbid, $fbname, $fblink, $fbimg);
+	            $this->createSession('FB', $fbid, $fbname, $fblink, $fbimg, $session);
 
 	            $retValue = true;
 	        } 
@@ -288,7 +290,7 @@ class MyTwitter extends MySocial
 	                $twImg  = 'https://twitter.com/' . $twname . '/profile_image?size=original';
 
 	                // Create Session Variables
-	            	$this->createSession('TW', $twid, $twname, $twlink, $twImg);
+	            	$this->createSession('TW', $twid, $twname, $twlink, $twImg, $access_token);
 
 	                unset($_SESSION['token']);
 	                unset($_SESSION['token_secret']);
