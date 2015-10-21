@@ -18,7 +18,8 @@ Create file composer.json
         "yorch/mylogin" : "dev-master",
         "monolog/monolog": "1.13.1",
         "facebook/php-sdk-v4" : "4.0.23",
-        "ruudk/twitter-oauth" : "dev-master"
+        "ruudk/twitter-oauth" : "dev-master",
+        "google/apiclient": "1.*"
     }
 }
 ~~~
@@ -39,11 +40,12 @@ else
 ~~~
 
 ## Notes ##
-This tool uses PHP Sessions and Facebook SDk and Abraham Twitter OAuth Library.
+This tool uses PHP Sessions and Facebook SDk, Abraham Twitter OAuth Library and Google Api Client.
 
 ## References ##
 https://developers.facebook.com/
 https://dev.twitter.com/
+https://console.developers.google.com
 https://en.wikipedia.org/wiki/OAuth
 
 P.D. Let's go play !!!

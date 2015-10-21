@@ -42,6 +42,7 @@ class MyLogin
 	 */
 	const FACEBOOK = 'MyFaceBook';
 	const TWITTER = 'MyTwitter';
+	const GOOGLE = 'MyGoogle';
 
 	/**
 	 * Initialize Wrapper

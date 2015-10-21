@@ -323,4 +323,93 @@ class MyTwitter extends MySocial
 		return $retValue;
 	}
 }
+
+/**
+ * Google+ Implementation of MySocial
+ *
+ * @category   MyGoogle
+ * @package    MySocial
+ * @copyright  Copyright 2015 Jorge Alberto Ponce Turrubiates
+ * @license    http://www.apache.org/licenses/LICENSE-2.0
+ * @version    1.0.0, 2015-10-21
+ * @author     Jorge Alberto Ponce Turrubiates (the.yorch@gmail.com)
+ */
+class MyGoogle extends MySocial
+{
+	/**
+	 * Constructor Class
+	 * 
+	 * @param string $appKey    Twitter Consumer Key
+	 * @param string $appSecret Twitter Secret Key
+	 * @param string $cbUrl     CallBack URL
+	 */
+	public function __construct($appKey, $appSecret, $cbUrl)
+	{
+		// Check Sessions
+		if (session_status() == PHP_SESSION_NONE) {
+		    session_start();
+		}
+
+		// Init Log
+		$this->initlog();
+		
+		$this->_appKey = $appKey;
+		$this->_appSecret = $appSecret;
+		$this->_cbUrl = $cbUrl;
+	}
+
+	/**
+	 * Check Login Google+ Session Variables
+	 * 
+	 * @return boolean
+	 */
+	public function login()
+	{
+		$retValue = false;
+
+		try{
+			$client = new Google_Client();
+			$client->setClientId($this->_appKey);
+			$client->setClientSecret($this->_appSecret);
+			$client->setRedirectUri($this->_cbUrl);
+
+			$client->addScope("email");
+			$client->addScope("profile");
+
+			$service = new Google_Service_Oauth2($client);
+
+			if (isset($_GET['code'])) {
+				$client->authenticate($_GET['code']);
+
+				// Create access_token
+				$_SESSION['access_token'] = $client->getAccessToken();
+			}
+
+			if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+				$client->setAccessToken($_SESSION['access_token']);
+
+				// Get Info User
+				$user = $service->userinfo->get();
+
+				$gpid   = $user->getId();
+                $gpname = $user->getGivenName() . ' ' . $user->getFamilyName();
+                $gplink = $user->getLink();
+                $gpImg  = $user->getPicture();
+
+                // Create Session Variables
+            	$this->createSession('GP', $gpid, $gpname, $gplink, $gpImg, $access_token);
+
+            	$retValue = true;
+			} 
+			else {
+				$this->_authUrl = $client->createAuthUrl();
+			}
+		}
+		catch(Exception $e){
+        	$this->_log->addError($e->getMessage());
+        }
+
+		return $retValue;
+	}
+}
 ?>

@@ -1,7 +1,7 @@
 {
     "name": "yorch/mylogin",
     "description": "Abstract Class for Login in Social Networks",
-    "keywords": ["Facebook", "Twitter", "Social Networks"],
+    "keywords": ["Facebook", "Twitter", "Social Networks", "Google Plus"],
     "homepage": "https://github.com/yorch81/MyLogin",
     "type": "library",
     "license": "Apache-2.0",
@@ -16,7 +16,8 @@
     	"php": ">=5.4.0",
         "monolog/monolog": "1.13.1",
         "facebook/php-sdk-v4" : "4.0.23",
-        "ruudk/twitter-oauth" : "dev-master"
+        "ruudk/twitter-oauth" : "dev-master",
+        "google/apiclient": "1.*"
     },
     "autoload": {
         "files": ["MyLogin.class.php"]
