@@ -395,6 +395,7 @@ class MyGoogle extends MySocial
                 $gpname = $user->getGivenName() . ' ' . $user->getFamilyName();
                 $gplink = $user->getLink();
                 $gpImg  = $user->getPicture();
+                $access_token = $_SESSION['access_token'];
 
                 // Create Session Variables
             	$this->createSession('GP', $gpid, $gpname, $gplink, $gpImg, $access_token);
