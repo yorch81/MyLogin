@@ -121,15 +121,17 @@ abstract class MySocial
 	 * @param  string $name Social Name
 	 * @param  string $link Social Profile Link
 	 * @param  string $profileImg  Profile Image URL
+	 * @param  string $email Profile EMail
 	 * @param  object $session     Social Session
 	 */
-	public function createSession($type, $id, $name, $link, $profileImg, $session)
+	public function createSession($type, $id, $name, $link, $profileImg, $email, $session)
 	{
 		$_SESSION['SOCIAL_TYPE'] = $type;
 		$_SESSION['SOCIAL_ID'] = $id;
 		$_SESSION['SOCIAL_NAME'] = $name;
 		$_SESSION['SOCIAL_LINK'] = $link;
 		$_SESSION['SOCIAL_IMG'] = $profileImg;
+		$_SESSION['SOCIAL_MAIL'] = $email;
 		$_SESSION['SOCIAL_SESSION'] = $session;
 	}
 
@@ -205,7 +207,7 @@ class MyFaceBook extends MySocial
 	        }
 
 	        if (isset($session)){
-	        	$request = new FacebookRequest( $session, 'GET', '/me?fields=id,name,link' );
+	        	$request = new FacebookRequest( $session, 'GET', '/me?fields=id,name,link,email' );
 	        	$response = $request->execute();
 	        	$graphObject = $response->getGraphObject();
 	        	
@@ -213,14 +215,15 @@ class MyFaceBook extends MySocial
 	        	$fbname = $graphObject->getProperty('name');
 	        	$fblink = $graphObject->getProperty('link'); 
 	            $fbimg = 'https://graph.facebook.com/' . $fbid . '/picture?type=large';
+	            $fbMail  = $graphObject->getProperty('email');
 
 	            // Create Session Variables
-	            $this->createSession('FB', $fbid, $fbname, $fblink, $fbimg, $session);
+	            $this->createSession('FB', $fbid, $fbname, $fblink, $fbimg, $fbMail, $session);
 
 	            $retValue = true;
 	        } 
 	        else{
-	        	$this->_authUrl = $helper->getLoginUrl();
+	        	$this->_authUrl = $helper->getLoginUrl(array('scope' => 'email'));
 	        }
 		}
 		catch(Exception $e){
@@ -288,9 +291,10 @@ class MyTwitter extends MySocial
 	                $twname = $_SESSION['request_vars']['screen_name'];
 	                $twlink = 'https://twitter.com/intent/user?user_id=' . $twid;
 	                $twImg  = 'https://twitter.com/' . $twname . '/profile_image?size=original';
+	                $twMail = 'twitter@twitter.com';
 
 	                // Create Session Variables
-	            	$this->createSession('TW', $twid, $twname, $twlink, $twImg, $access_token);
+	            	$this->createSession('TW', $twid, $twname, $twlink, $twImg, $twMail, $access_token);
 
 	                unset($_SESSION['token']);
 	                unset($_SESSION['token_secret']);
@@ -395,10 +399,11 @@ class MyGoogle extends MySocial
                 $gpname = $user->getGivenName() . ' ' . $user->getFamilyName();
                 $gplink = $user->getLink();
                 $gpImg  = $user->getPicture();
+                $gMail  = $user->getEmail();
                 $access_token = $_SESSION['access_token'];
 
                 // Create Session Variables
-            	$this->createSession('GP', $gpid, $gpname, $gplink, $gpImg, $access_token);
+            	$this->createSession('GP', $gpid, $gpname, $gplink, $gpImg, $gMail, $access_token);
 
             	$retValue = true;
 			} 

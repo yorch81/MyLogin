@@ -40,6 +40,20 @@ else
 ~~~
 
 ## Notes ##
+The Library creates session variables:
+
+~~~
+
+$_SESSION['SOCIAL_TYPE'] = ('FB', 'TW', 'GP')
+$_SESSION['SOCIAL_ID'] = 'SOCIAL_ID'
+$_SESSION['SOCIAL_NAME'] = 'SOCIAL_NAME'
+$_SESSION['SOCIAL_LINK'] = 'http://SOCIAL_URL/'
+$_SESSION['SOCIAL_IMG'] = 'http://SOCIAL_IMG/'
+$_SESSION['SOCIAL_MAIL'] = 'SOCIAL@MAIL'
+$_SESSION['SOCIAL_SESSION'] = 'SOCIAL_TOKEN';
+
+~~~
+
 This tool uses PHP Sessions and Facebook SDk, Abraham Twitter OAuth Library and Google Api Client.
 
 ## References ##
