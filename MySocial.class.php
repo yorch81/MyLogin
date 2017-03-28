@@ -1,16 +1,4 @@
 <?php
-use Facebook\FacebookSession;
-use Facebook\FacebookRedirectLoginHelper;
-use Facebook\FacebookRequest;
-use Facebook\FacebookResponse;
-use Facebook\FacebookSDKException;
-use Facebook\FacebookRequestException;
-use Facebook\FacebookAuthorizationException;
-use Facebook\GraphObject;
-use Facebook\Entities\AccessToken;
-use Facebook\HttpClients\FacebookCurlHttpClient;
-use Facebook\HttpClients\FacebookHttpable;
-
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -158,6 +146,13 @@ abstract class MySocial
 class MyFaceBook extends MySocial
 {
 	/**
+	 * Facebook Instance
+	 * 
+	 * @var Facebook\Facebook Facebook Instance
+	 */
+	private $fb;
+
+	/**
 	 * Constructor Class
 	 * 
 	 * @param string $appKey    Facebook Application Id
@@ -179,7 +174,10 @@ class MyFaceBook extends MySocial
 		$this->_cbUrl = $cbUrl;
 
 		try{
-			FacebookSession::setDefaultApplication($this->_appKey, $this->_appSecret);
+			$this->fb = new Facebook\Facebook([
+				'app_id' => $this->_appKey,
+				'app_secret' => $this->_appSecret,
+				'default_graph_version' => 'v2.8']);
 		}
 		catch(Exception $e){
         	$this->_log->addError($e->getMessage());
@@ -196,38 +194,46 @@ class MyFaceBook extends MySocial
 		$retValue = false;
 
 		try{
-			$helper = new FacebookRedirectLoginHelper($this->_cbUrl);
+	        $helper = $this->fb->getRedirectLoginHelper();
 
-	        try{
-	        	$session = $helper->getSessionFromRedirect();
-	        }
-	        catch(FacebookRequestException $e){
-	        	$this->_log->addError($e->getMessage());
-	        }
-	        catch(Exception $e){
-	        	$this->_log->addError($e->getMessage());
-	        }
+	        try {
+	        	$accessToken = $helper->getAccessToken();
+			} 
+			catch(Facebook\Exceptions\FacebookResponseException $e) {
+				$this->_log->addError($e->getMessage());
+			} 
+			catch(Facebook\Exceptions\FacebookSDKException $e) {
+				$this->_log->addError($e->getMessage());
+			}
 
-	        if (isset($session)){
-	        	$request = new FacebookRequest( $session, 'GET', '/me?fields=id,name,link,email,first_name,last_name' );
-	        	$response = $request->execute();
-	        	$graphObject = $response->getGraphObject();
-	        	
-	        	$fbid = $graphObject->getProperty('id');
-	        	//$fbname = $graphObject->getProperty('name'); 
-	        	$fbname = $graphObject->getProperty('first_name');
-	        	$fblast = $graphObject->getProperty('last_name');
-	        	$fblink = $graphObject->getProperty('link'); 
-	            $fbimg = 'https://graph.facebook.com/' . $fbid . '/picture?type=large';
-	            $fbMail  = $graphObject->getProperty('email');
+	        if (isset($accessToken)){
+	        	try {
+	        		$response = $this->fb->get('/me?fields=id,name,link,email,first_name,last_name', $accessToken);
 
-	            // Create Session Variables
-	            $this->createSession('FB', $fbid, $fbname, $fblast, $fblink, $fbimg, $fbMail, $session);
+	        		$user = $response->getGraphUser();
+		        	
+		        	$fbid = $user['id'];
+		        	$fbname = $user['first_name'];
+		        	$fblast = $user['last_name'];
+		        	$fblink = $user['link'];
+		            $fbimg = 'https://graph.facebook.com/' . $fbid . '/picture?type=large';
+		            $fbMail  = $user['email'];
+		            $session = $accessToken;
 
-	            $retValue = true;
+		            // Create Session Variables
+		            $this->createSession('FB', $fbid, $fbname, $fblast, $fblink, $fbimg, $fbMail, $session);
+
+		            $retValue = true;
+				} 
+				catch(Facebook\Exceptions\FacebookResponseException $e) {
+					$this->_log->addError($e->getMessage());
+				} 
+				catch(Facebook\Exceptions\FacebookSDKException $e) {
+					$this->_log->addError($e->getMessage());
+				}
 	        } 
 	        else{
-	        	$this->_authUrl = $helper->getLoginUrl(array('scope' => 'email'));
+	        	$this->_authUrl = $helper->getLoginUrl($this->_cbUrl);
 	        }
 		}
 		catch(Exception $e){
