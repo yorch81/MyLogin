@@ -233,7 +233,9 @@ class MyFaceBook extends MySocial
 				}
 	        } 
 	        else{
-	        	$this->_authUrl = $helper->getLoginUrl($this->_cbUrl);
+	        	$permissions = ['email'];
+	        	
+	        	$this->_authUrl = $helper->getLoginUrl($this->_cbUrl, $permissions);
 	        }
 		}
 		catch(Exception $e){
