@@ -177,7 +177,7 @@ class MyFaceBook extends MySocial
 			$this->fb = new Facebook\Facebook([
 				'app_id' => $this->_appKey,
 				'app_secret' => $this->_appSecret,
-				'default_graph_version' => 'v2.8']);
+				'default_graph_version' => 'v9.0']);
 		}
 		catch(Exception $e){
         	$this->_log->addError($e->getMessage());
@@ -193,8 +193,8 @@ class MyFaceBook extends MySocial
 	{
 		$retValue = false;
 
-		try{
-	        $helper = $this->fb->getRedirectLoginHelper();
+		try {
+			$helper = $this->fb->getRedirectLoginHelper();
 
 	        try {
 	        	$accessToken = $helper->getAccessToken();
@@ -206,16 +206,16 @@ class MyFaceBook extends MySocial
 				$this->_log->addError($e->getMessage());
 			}
 
-	        if (isset($accessToken)){
+	        if (isset($accessToken)) {
 	        	try {
 	        		$response = $this->fb->get('/me?fields=id,name,link,email,first_name,last_name', $accessToken);
 
 	        		$user = $response->getGraphUser();
-		        	
+
 		        	$fbid = $user['id'];
 		        	$fbname = $user['first_name'];
 		        	$fblast = $user['last_name'];
-		        	$fblink = $user['link'];
+		        	$fblink = "https://facebook.com/profile.php?id=" . $user['id'];
 		            $fbimg = 'https://graph.facebook.com/' . $fbid . '/picture?type=large';
 		            $fbMail  = $user['email'];
 		            $session = $accessToken;
@@ -232,7 +232,7 @@ class MyFaceBook extends MySocial
 					$this->_log->addError($e->getMessage());
 				}
 	        } 
-	        else{
+	        else {
 	        	$permissions = ['email'];
 	        	
 	        	$this->_authUrl = $helper->getLoginUrl($this->_cbUrl, $permissions);
