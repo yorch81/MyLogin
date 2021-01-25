@@ -15,7 +15,7 @@
     "require": {
     	"php": ">=5.4.0",
         "monolog/monolog": "1.13.1",
-        "facebook/graph-sdk" : "~5.0",
+        "facebook/graph-sdk": "5.7.0",
         "ruudk/twitter-oauth" : "dev-master",
         "google/apiclient": "1.*"
     },
